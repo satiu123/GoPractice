@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"net/http"
 	"strconv"
 
@@ -22,7 +21,7 @@ func NewAlbumHandler(repo *repository.AlbumRepository) *AlbumHandler {
 // GetAlbums 响应一个包含所有专辑列表的JSON
 
 func (h *AlbumHandler) GetAlbums(c *gin.Context) {
-	albums, err := h.repo.GetAlbums(context.Background())
+	albums, err := h.repo.GetAlbums(c.Request.Context())
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -41,7 +40,7 @@ func (h *AlbumHandler) PostAlbums(c *gin.Context) {
 	if err := c.BindJSON(&newAlbum); err != nil {
 		return
 	}
-	err := h.repo.Create(context.Background(), &newAlbum)
+	err := h.repo.Create(c.Request.Context(), &newAlbum)
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -58,7 +57,7 @@ func (h *AlbumHandler) GetAlbumByID(c *gin.Context) {
 		return
 	}
 
-	album, err := h.repo.GetAlbumByID(context.Background(), uint(albumID))
+	album, err := h.repo.GetAlbumByID(c.Request.Context(), uint(albumID))
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
 		return
