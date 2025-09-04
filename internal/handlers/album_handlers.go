@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"go-practice/internal/cache"
 	"go-practice/internal/model"
 	"go-practice/internal/repository"
 
@@ -63,4 +64,59 @@ func (h *AlbumHandler) GetAlbumByID(c *gin.Context) {
 		return
 	}
 	c.IndentedJSON(http.StatusOK, album)
+}
+
+// ClearCache 清除所有缓存
+func (h *AlbumHandler) ClearCache(c *gin.Context) {
+	if cache.RedisClient == nil {
+		c.IndentedJSON(http.StatusServiceUnavailable, gin.H{"error": "Redis is not available"})
+		return
+	}
+
+	// 清除所有专辑相关缓存
+	keys := []string{"albums:all"}
+
+	// 获取所有专辑ID的缓存键
+	if result, err := cache.RedisClient.Keys(c.Request.Context(), "album:*").Result(); err == nil {
+		keys = append(keys, result...)
+	}
+
+	// 删除所有键
+	for _, key := range keys {
+		if err := cache.DeleteCache(key); err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Failed to clear cache"})
+			return
+		}
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "Cache cleared successfully"})
+}
+
+// GetCacheStatus 获取缓存状态
+func (h *AlbumHandler) GetCacheStatus(c *gin.Context) {
+	if cache.RedisClient == nil {
+		c.IndentedJSON(http.StatusOK, gin.H{"redis_status": "disconnected"})
+		return
+	}
+
+	// 检查Redis连接
+	_, err := cache.RedisClient.Ping(c.Request.Context()).Result()
+	if err != nil {
+		c.IndentedJSON(http.StatusOK, gin.H{
+			"redis_status": "error",
+			"error":        err.Error(),
+		})
+		return
+	}
+
+	// 获取缓存统计信息
+	albumsExists, _ := cache.Exists("albums:all")
+	albumKeys, _ := cache.RedisClient.Keys(c.Request.Context(), "album:*").Result()
+
+	c.IndentedJSON(http.StatusOK, gin.H{
+		"redis_status":             "connected",
+		"albums_cached":            albumsExists,
+		"individual_albums_cached": len(albumKeys),
+		"cached_album_keys":        albumKeys,
+	})
 }

@@ -8,7 +8,8 @@ import (
 )
 
 func InitDB() *gorm.DB {
-	dsn := "root:12345678@tcp(127.0.0.1:3306)/shop?charset=utf8mb4&parseTime=True&loc=Local"
+	// 使用 docker-compose 中配置的 MariaDB 连接信息 (端口3307)
+	dsn := "app_user:app_password@tcp(127.0.0.1:3307)/album_db?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")

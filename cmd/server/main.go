@@ -4,6 +4,8 @@ import (
 	"log"
 
 	"go-practice/data"
+	"go-practice/internal/cache"
+	"go-practice/internal/config"
 	"go-practice/internal/handlers"
 	"go-practice/internal/repository"
 	"go-practice/internal/router"
@@ -12,6 +14,21 @@ import (
 )
 
 func main() {
+	// 加载配置
+	cfg := config.LoadConfig()
+
+	// 初始化Redis
+	redisConfig := cache.RedisConfig{
+		Host:     cfg.Redis.Host,
+		Port:     cfg.Redis.Port,
+		Password: cfg.Redis.Password,
+		DB:       cfg.Redis.DB,
+	}
+
+	if err := cache.InitRedis(redisConfig); err != nil {
+		log.Printf("Redis initialization failed: %v", err)
+		log.Println("Application will continue without Redis cache")
+	}
 
 	// 初始化数据库
 	db := data.InitDB()

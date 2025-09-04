@@ -14,7 +14,13 @@ func Register(r *gin.Engine, ah *handlers.AlbumHandler) {
 			"pong",
 		)
 	})
+
+	// 专辑相关路由
 	r.GET("/albums", ah.GetAlbums)
 	r.GET("/albums/:id", ah.GetAlbumByID)
 	r.POST("/albums", ah.PostAlbums)
+
+	// 缓存管理路由
+	r.DELETE("/cache", ah.ClearCache)
+	r.GET("/cache/status", ah.GetCacheStatus)
 }
