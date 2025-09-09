@@ -46,7 +46,7 @@ func (r *AlbumRepository) GetAlbumByID(ctx context.Context, id uint) (model.Albu
 	// 尝试从缓存获取
 	if cache.RedisClient != nil {
 		if err := cache.GetCacheJSON(albumKey, &album); err == nil {
-			log.Printf("Album %d retrieved from cache", id)
+			// log.Printf("Album %d retrieved from cache", id)
 			return album, nil
 		} else if err != redis.Nil {
 			log.Printf("Cache error: %v", err)
@@ -76,7 +76,7 @@ func (r *AlbumRepository) GetAlbums(ctx context.Context) ([]model.Album, error) 
 	// 尝试从缓存获取
 	if cache.RedisClient != nil {
 		if err := cache.GetCacheJSON(albumsKey, &albums); err == nil {
-			log.Println("Albums retrieved from cache")
+			// log.Println("Albums retrieved from cache")
 			return albums, nil
 		} else if err != redis.Nil {
 			log.Printf("Cache error: %v", err)

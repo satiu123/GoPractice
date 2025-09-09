@@ -24,14 +24,21 @@ func main() {
 		Password: cfg.Redis.Password,
 		DB:       cfg.Redis.DB,
 	}
-
+	// 初始化DB
+	dbConfig := data.DBConfig{
+		Host:     cfg.DB.Host,
+		Port:     cfg.DB.Port,
+		User:     cfg.DB.User,
+		Password: cfg.DB.Password,
+		DBName:   cfg.DB.DBName,
+	}
 	if err := cache.InitRedis(redisConfig); err != nil {
 		log.Printf("Redis initialization failed: %v", err)
 		log.Println("Application will continue without Redis cache")
 	}
 
 	// 初始化数据库
-	db := data.InitDB()
+	db := data.InitDB(dbConfig)
 	// 初始化repo
 	albumRepo := repository.NewAlbumRepository(db)
 
@@ -39,7 +46,8 @@ func main() {
 	albumHandler := handlers.NewAlbumHandler(albumRepo)
 
 	// 初始化 Gin 引擎（默认包含 Logger 与 Recovery 中间件）
-	r := gin.Default()
+	// r := gin.Default()
+	r := gin.New()
 	// 显式设置可信代理为 nil，避免警告；生产环境按需配置
 	_ = r.SetTrustedProxies(nil)
 	// 注册路由

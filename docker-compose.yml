@@ -19,8 +19,8 @@ services:
     environment:
       MARIADB_ROOT_PASSWORD: rootpassword
       MARIADB_DATABASE: album_db
-      MARIADB_USER: app_user
-      MARIADB_PASSWORD: app_password
+      MARIADB_USER: satiu
+      MARIADB_PASSWORD: 123456
     ports:
       - "3307:3306"
     volumes:

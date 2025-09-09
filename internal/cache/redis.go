@@ -56,7 +56,7 @@ func GetCache(key string) (string, error) {
 }
 
 // GetCacheJSON 获取缓存并反序列化为指定类型
-func GetCacheJSON(key string, dest interface{}) error {
+func GetCacheJSON(key string, dest any) error {
 	val, err := RedisClient.Get(ctx, key).Result()
 	if err != nil {
 		return err
