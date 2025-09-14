@@ -25,8 +25,8 @@ func (e *Engine) GET(pattern string, handler HandlerFunc) {
 func (e *Engine) POST(pattern string, handler HandlerFunc) {
 	e.addRoute("POST", pattern, handler)
 }
-func (e *Engine) UPDATE(pattern string, handler HandlerFunc) {
-	e.addRoute("UPDATE", pattern, handler)
+func (e *Engine) PUT(pattern string, handler HandlerFunc) {
+	e.addRoute("PUT", pattern, handler)
 }
 func (e *Engine) DELETE(pattern string, handler HandlerFunc) {
 	e.addRoute("DELETE", pattern, handler)
