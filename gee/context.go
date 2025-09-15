@@ -41,6 +41,7 @@ func (c *Context) Next() {
 		c.handlers[c.index](c)
 	}
 }
+
 func (c *Context) Param(key string) string {
 	return c.Params[key]
 }

@@ -30,6 +30,12 @@ func New() *Engine {
 	engine.groups = []*RouterGroup{engine.RouterGroup}
 	return engine
 }
+func Default() *Engine {
+	engine := New()
+	engine.middlewares = append(engine.middlewares, Logger(), Recovery())
+	return engine
+}
+
 func (group *RouterGroup) Group(prefix string) *RouterGroup {
 	engine := group.engine
 	newGroup := &RouterGroup{
