@@ -1,4 +1,4 @@
-module go-practice
+module gee-web
 
 go 1.25.1
 
