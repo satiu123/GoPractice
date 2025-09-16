@@ -11,6 +11,7 @@ import (
 
 func Logger() HandlerFunc {
 	return func(c *Context) {
+		log.Printf("%s %s", c.Method, c.Path)
 		t := time.Now()
 		c.Next()
 		log.Printf("[%d] %s in %v", c.StatusCode, c.Req.RequestURI, time.Since(t))
